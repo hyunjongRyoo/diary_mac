@@ -124,7 +124,7 @@
 	<div style="text-align: center">
 	<a href="lunchOne.jsp" class="btn btn-outline-info">다시 투표하기 </a>
 	<a href="deleteLunchAction.jsp?lunchDate=<%=lunchDate%>" class="btn btn-outline-info">투표 삭제하기</a>
-	<a href="diary.jsp" class="btn btn-outline-info">목록으로 돌아가기</a>
+	<a href="diary.jsp" class="btn btn-outline-info">달력으로 돌아가기</a>
 	</div>
 	
 	

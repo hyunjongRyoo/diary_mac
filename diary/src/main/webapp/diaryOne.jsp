@@ -2,39 +2,23 @@
 <%@ page import="java.sql.*"%>
 <%@ page import="java.net.*"%>
 <%@ page import="java.util.*"%>
-<% // 로그인 세션 on/off
+<% 
+//로그인(인증)분기
+ 	String loginMember = (String)(session.getAttribute("loginMember"));
 
-String sql1 ="SELECT my_session mySession FROM login";
-//디버깅 코드
-System.out.println(sql1);
-
-Class.forName("org.mariadb.jdbc.Driver");
-Connection conn= null;
-PreparedStatement stmt1 = null;
-ResultSet rs1 = null;
-
-conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1:3306/diary", "root", "guswhd6656");
-stmt1 = conn.prepareStatement(sql1);
-
-
-rs1 = stmt1.executeQuery();
-
-String mySession = null;
-
-if(rs1.next()){
-	mySession = rs1.getString("mySession");
-	
-}
-
-if(mySession.equals("OFF")) {
-	String errMsg = URLEncoder.encode("잘못된 접근입니다. 로그인 먼저해주세요", "utf-8");
-	response.sendRedirect("/diary/loginForm.jsp?errMsg=" +errMsg);
-	return;  // 코드 진행을 끝내는 문법  ex) 메소드 끝낼때 return을 사용함 
-             //로그인이 되어있지 않을때  로그인폼으로 이동하여  로그인먼저 실행 
-}
+	if(loginMember == null) { // 로그인 멤버값이 null 이라면
+		String errMsg = URLEncoder.encode("잘못된 접근입니다. 로그인 먼저 해주세요", "utf-8");
+	    response.sendRedirect("/diary/loginForm.jsp?errMsg=" + errMsg);
+	    return; //코드 진행을 끝내는 문법 
+	}
 %>
 
 <%
+Class.forName("org.mariadb.jdbc.Driver");
+Connection conn= null;
+conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1:3306/diary", "root", "guswhd6656");
+
+
 //diary 에서 받아온 값 처리
 String diaryDate =request.getParameter("diaryDate");  //date는 string으로 받아와도 된다
 //디버깅 코드

@@ -4,33 +4,20 @@
 <%@ page import="java.util.*"%>
 <% 
    //로그인(인증) 분기
-   // diary.login.my_session => "OFF" 일땐 redirect("loginForm.jsp")
-   //테이블 이름/칼럼이름
-   //on일때는 로그인 되어있는거 off일때는 로그인 안되어있는것 
-   //그래서 loginForm에는 on일 상태에는 갈필요가 없다
-   
-   String sql1 = "SELECT my_session mySession FROM login"; //로그인테이블로부터 my_session 값을 가져오는데 별칭으로 가져옴 : mySession
-   Class.forName("org.mariadb.jdbc.Driver");
-   Connection conn = null;
-   PreparedStatement stmt1 = null;
-   ResultSet rs1 = null;
-	conn = DriverManager.getConnection(
-			"jdbc:mariadb://127.0.0.1:3306/diary", "root", "guswhd6656");
+	String loginMember =(String) (session.getAttribute("loginMember"));
 
-	stmt1 = conn.prepareStatement(sql1);
-	rs1 = stmt1.executeQuery();
-	String mySession = null;
-	if(rs1.next()) {
-		mySession = rs1.getString("mySession");
-	}
    
-   if(mySession.equals("OFF")){
+   if(loginMember == null){ //로그인 멤버 값이 null 이라면 
       String errMsg = URLEncoder.encode("잘못된 접근입니다. 로그인 먼저 해주세요", "utf-8");
       response.sendRedirect("/diary/loginForm.jsp?errMsg=" + errMsg);
       return; //코드 진행을 끝내는 문법 
    }
 %>
 <%
+	Class.forName("org.mariadb.jdbc.Driver");
+	Connection conn = null;
+	conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1:3306/diary", "root", "guswhd6656");
+
    
    //달력 API
    

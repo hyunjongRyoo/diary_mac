@@ -4,41 +4,19 @@
 <%@page import="java.net.URLEncoder"%>
 <% 
    //로그인(인증) 분기
+	String loginMember =(String) (session.getAttribute("loginMember"));
 
-   String sql = "SELECT my_session mySession FROM login";
    
-   Class.forName("org.mariadb.jdbc.Driver");
-   Connection conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1:3306/diary", "root", "guswhd6656");
-   PreparedStatement stmt = null;
-   stmt = conn.prepareStatement(sql);
-   ResultSet rs = null;
-   rs = stmt.executeQuery();
-   
-   String mySession = null;
-   
-   if(rs.next()){
-      mySession = rs.getString("mySession");
-         
-   }
-   
-   if(mySession.equals("OFF")){
+   if(loginMember == null){ //로그인 멤버 값이 null 이라면 
       String errMsg = URLEncoder.encode("잘못된 접근입니다. 로그인 먼저 해주세요", "utf-8");
       response.sendRedirect("/diary/loginForm.jsp?errMsg=" + errMsg);
-      //자원 반납
-      rs.close();
-      stmt.close();
-      conn.close();
-      return;
+      return; //코드 진행을 끝내는 문법 
    }
+ %>
+ <% 
    
-   
-   //if문 안걸릴 시 자원 반납
-   rs.close();
-   stmt.close();
-   conn.close();
-   
-   
-   
+ Class.forName("org.mariadb.jdbc.Driver");
+ Connection conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1:3306/diary", "root", "guswhd6656");
    
    
    String checkDate = request.getParameter("checkDate");

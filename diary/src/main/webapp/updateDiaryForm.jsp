@@ -1,16 +1,31 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*"%>
+<%@ page import="java.net.*"%>
+<% 
+   //로그인(인증) 분기
+	String loginMember =(String) (session.getAttribute("loginMember"));
+
+   
+   if(loginMember == null){ //로그인 멤버 값이 null 이라면 
+      String errMsg = URLEncoder.encode("잘못된 접근입니다. 로그인 먼저 해주세요", "utf-8");
+      response.sendRedirect("/diary/loginForm.jsp?errMsg=" + errMsg);
+      return; //코드 진행을 끝내는 문법 
+   }
+%>
+
+
 
 <%
+Class.forName("org.mariadb.jdbc.Driver");
+Connection conn =null;
+conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1:3306/diary", "root", "guswhd6656");
+
 String diaryDate = request.getParameter("diaryDate");
 System.out.println(diaryDate + "<--diaryDate");
 
 String sql= "SELECT diary_Date diaryDate , title , weather , content , update_date updateDate , create_date createDate FROM diary WHERE diary_Date = ?";
-Class.forName("org.mariadb.jdbc.Driver");
-Connection conn =null;
 PreparedStatement stmt = null;
 ResultSet rs =  null;
-conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1:3306/diary", "root", "guswhd6656");
 stmt =conn.prepareStatement(sql);
 stmt.setString(1, diaryDate);
 

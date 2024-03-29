@@ -34,7 +34,7 @@ if(mySession.equals("OFF")) {
 %>
 <%
 String lunchDate =request.getParameter("lunchDate");
-String sql2="SELECT lunch_date lunchDate, menu FROM lunch WHERE lunch_date = CURDATE()";
+String sql2="SELECT lunch_date lunchDate, menu FROM lunch WHERE lunch_date =  ?";
 PreparedStatement stmt2 = null;
 ResultSet rs2 = null;
 

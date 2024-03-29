@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="java.sql.*" %>
 <% 
-   //로그인(인증) 분기
-   // diary.login.my_session => "ON" 일땐 redirect("/diary/diary.jsp");
+  
+  /*  //로그인(인증) db 사용
+  // diary.login.my_session => "ON" 일땐 redirect("/diary/diary.jsp");
    // 테이블 이름 / 칼럼이름
    //on일때는 로그인 되어있는거 off일때는 로그인 안되어있는것 
    //그래서 loginForm에는 on일 상태에는 갈필요가 없다.
@@ -19,7 +19,7 @@
    ResultSet rs = null;
    rs = stmt.executeQuery();
    
-   String mySession = null;
+   String mySession = null; 
    
    if(rs.next()){
       mySession = rs.getString("mySession");
@@ -28,26 +28,28 @@
    
    if(mySession.equals("ON")){
       response.sendRedirect("/diary/diary.jsp");
-      
-      //자원 반납
-      rs.close();
-      stmt.close();
-      conn.close();
-      
       return;
    }
+   */
    
-   // 요청값 받기
+   
+   //0-1 	로그인(인증) 분기 session 사용으로 변경
+   //로그인 성공시 세션에 loginmember라는 변수를 만들고 값으로 로그인 아이디를 저장
+   String loginMember = (String)(session.getAttribute("loginMember")); //세션안에서 로그인멤버라는 변수를 가져오기
+   // (session.getAttribute()//찾는 변수가 없으면 null값을 반환한다
+   // null이면 로그아웃 상태이고 null이 아니면 로그인 상태 
+	 	System.out.println(loginMember + "<--loginMember");
+   
+   //loginForm페이지는 로그아웃상태에서만 출력되는 페이지
+  	if(loginMember != null) {
+		response.sendRedirect("/diary/diary.jsp");
+		return; // 코드 진행을 끝내는 문법 ex) 메서드 끝낼때 return사용
+	}
+   // 1.요청값 받기
    String errMsg = request.getParameter("errMsg");
    
    //디버깅
    System.out.println(errMsg + " <-- loginForm param errMsg");
-   
-   //if문 안걸릴 시 자원 반납
-   rs.close();
-   stmt.close();
-   conn.close();
-   
 %>
 <!DOCTYPE html>
 <html>
