@@ -14,25 +14,26 @@
 %>
 
 <%
+//diary 에서 받아온 값 처리
+String diaryDate =request.getParameter("diaryDate");  //date는 string으로 받아와도 된다
+//디버깅 코드
+System.out.println(diaryDate+"<--diaryDate"); 
+
 Class.forName("org.mariadb.jdbc.Driver");
 Connection conn= null;
 conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1:3306/diary", "root", "guswhd6656");
 
 
-//diary 에서 받아온 값 처리
-String diaryDate =request.getParameter("diaryDate");  //date는 string으로 받아와도 된다
-//디버깅 코드
-System.out.println(diaryDate+"<--diaryDate"); 
-String sql2 = "select diary_date diaryDate,title,weather,content,update_date updateDate,create_date createDate from diary where diary_date= ?";
- //
 
-PreparedStatement stmt2 = null;
-stmt2 =conn.prepareStatement(sql2);
-stmt2.setString(1,diaryDate);
+String sql = "select diary_date diaryDate,title,weather,content,update_date updateDate,create_date createDate from diary where diary_date= ?";
 
-System.out.println(stmt2);
-ResultSet rs2 = null;
-rs2 = stmt2.executeQuery();
+PreparedStatement stmt = null;
+stmt=conn.prepareStatement(sql);
+stmt.setString(1,diaryDate);
+
+System.out.println(stmt);
+ResultSet rs = null;
+rs= stmt.executeQuery();
 
 
 %>
@@ -131,12 +132,12 @@ rs2 = stmt2.executeQuery();
    		<hr>
    			<%
    			
-   			if(rs2.next()) {
-   			String title=rs2.getString("title");
-   			String weather=rs2.getString("weather");
-   			String content=rs2.getString("content");
-   			String updateDate=rs2.getString("updateDate");
-   			String createDate=rs2.getString("createDate");
+   			if(rs.next()) {
+   			String title=rs.getString("title");
+   			String weather=rs.getString("weather");
+   			String content=rs.getString("content");
+   			String updateDate=rs.getString("updateDate");
+   			String createDate=rs.getString("createDate");
    			
    			
 			%>
@@ -150,6 +151,38 @@ rs2 = stmt2.executeQuery();
    		<%
    		}
    		 %>	
+   		 <!-- 댓글 추가 폼 -->
+   		 	<div>
+   		 		<form method="post" action="/diary/addCommentAction.jsp">
+   		 			<input type="hidden" name="diaryDate" value="<%=diaryDate%>>">
+   		 			<textarea row="2" cols="50" name="memo"></textarea>
+   		 			<button type="submit">확인</button>
+   		 		</form>
+   		 		<!-- 댓글 리스트 -->
+   		 		<%
+   		 			
+   		 			String sql2 ="select comment_no commentNo,memo,create_date createDate from comment where diary_date=?";
+   		 			PreparedStatement stmt2 = null;
+   		 			ResultSet rs2 = null;
+   		 			
+   		 			stmt2=conn.prepareStatement(sql2);
+   		 			stmt2.setString(1,diaryDate);
+   		 			rs2=stmt2.executeQuery();
+   		 		%>
+   		 			<table border="1">
+   				 <%
+   		 			while(rs2.next()){
+   		 	%>
+   		 				<tr>
+   		 					<td><%=rs2.getString("memo")%></td>
+   		 					<td><%=rs2.getString("createDate")%></td>
+   		 					<td><a href="/diary/deleteComment.jsp?commentNo=<%=rs2.getInt("commentNo")%>">수정</a></td>
+   		 				</tr>
+   		 	<% 
+   		 			}
+   		 	%>
+   		 </table>
+   		 	</div>
    		 <a href="/diary/updateDiaryForm.jsp?diaryDate=<%=diaryDate%>" class="mt-3 mb-4 btn btn-outline-info">일기수정</a>
 		 <a href="/diary/deleteDiary.jsp?diaryDate=<%=diaryDate%>" class="mt-3 mb-4 btn btn-outline-info">일기삭제</a>
     		</div>

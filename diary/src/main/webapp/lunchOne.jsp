@@ -17,13 +17,19 @@
 Class.forName("org.mariadb.jdbc.Driver");
 Connection conn= null;
 conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1:3306/diary", "root", "guswhd6656");
+
+// 선택 날짜에 lunch Date가 있는지 확인
 String lunchDate =request.getParameter("lunchDate");
+String menu =request.getParameter("menu");
+
+// 선택된 lunch Date 투표가 있는지 확인
 String sql2="SELECT lunch_date lunchDate, menu FROM lunch WHERE lunch_date =  ?";
 PreparedStatement stmt2 = null;
 ResultSet rs2 = null;
-
-
-
+stmt2 =	conn.prepareStatement(sql2);
+stmt2.setString(1, lunchDate);
+rs2 = stmt2.executeQuery();
+System.out.println(stmt2);
 
 %>
 <!DOCTYPE html>
@@ -75,19 +81,19 @@ ResultSet rs2 = null;
 			    		<h1>원하시는 점심 메뉴를 골라주세요!</h1>
 		    		
 			    		<div><label for="양식">- 양식</label>
-			    			<input type="checkbox" name="lunch" id="양식" value="양식">
+			    			<input type="radio" name="lunch" id="양식" value="양식">
 			    		</div><br>
 			    		
 						<div><label for="일식">- 일식</label>
-			    			<input type="checkbox" name="lunch" id="일식" value="일식">
+			    			<input type="radio" name="lunch" id="일식" value="일식">
 			    		</div><br>
 			    	
 						<div><label for="중식">- 중식</label>
-			    			<input type="checkbox" name="lunch" id="중식" value="중식">
+			    			<input type="radio" name="lunch" id="중식" value="중식">
 			    		</div><br>
 			    		
 						<div><label for="한식">- 한식</label>
-			    			<input type="checkbox" name="lunch" id="한식" value="한식">
+			    			<input type="radio" name="lunch" id="한식" value="한식">
 		    			</div><br>
 		    			
 			    		<button type = "submit" class="btn btn-outline-info">투표!</button>
