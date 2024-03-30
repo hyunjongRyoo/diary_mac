@@ -21,21 +21,19 @@ System.out.println(diaryDate+"<--diaryDate");
 
 Class.forName("org.mariadb.jdbc.Driver");
 Connection conn= null;
+PreparedStatement stmt = null;
+ResultSet rs = null;
 conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1:3306/diary", "root", "guswhd6656");
 
 
 
 String sql = "select diary_date diaryDate,title,weather,content,update_date updateDate,create_date createDate from diary where diary_date= ?";
 
-PreparedStatement stmt = null;
 stmt=conn.prepareStatement(sql);
 stmt.setString(1,diaryDate);
-
+//디버깅
 System.out.println(stmt);
-ResultSet rs = null;
 rs= stmt.executeQuery();
-
-
 %>
 <!DOCTYPE html>
 <html>
@@ -128,7 +126,7 @@ rs= stmt.executeQuery();
       </div>
       </div>
     <div class="col-6 bg-black border shadow p-3 mb-5 bg-body-tertiary rounded">
-   		<h1><%=diaryDate%> Diary</h1>
+   		<h1><%=diaryDate%>-Diary</h1>
    		<hr>
    			<%
    			
@@ -154,20 +152,21 @@ rs= stmt.executeQuery();
    		 <!-- 댓글 추가 폼 -->
    		 	<div>
    		 		<form method="post" action="/diary/addCommentAction.jsp">
-   		 			<input type="hidden" name="diaryDate" value="<%=diaryDate%>>">
-   		 			<textarea row="2" cols="50" name="memo"></textarea>
+   		 			<input type="hidden" name="diaryDate" value="<%=diaryDate%>">
+   		 			<textarea rows="2" cols="50" name="memo"></textarea>
    		 			<button type="submit">확인</button>
    		 		</form>
+   		 		
    		 		<!-- 댓글 리스트 -->
    		 		<%
-   		 			
-   		 			String sql2 ="select comment_no commentNo,memo,create_date createDate from comment where diary_date=?";
-   		 			PreparedStatement stmt2 = null;
-   		 			ResultSet rs2 = null;
-   		 			
-   		 			stmt2=conn.prepareStatement(sql2);
-   		 			stmt2.setString(1,diaryDate);
-   		 			rs2=stmt2.executeQuery();
+   		 	//댓글 추가
+   		 	String sql2 ="select comment_no commentNo,memo,create_date createDate from comment where diary_date=?";
+   		 	PreparedStatement stmt2 = null;
+   		 	ResultSet rs2 = null;
+   		 	stmt2=conn.prepareStatement(sql2);
+   		 	stmt2.setString(1,diaryDate);
+   		 	rs2=stmt2.executeQuery();
+
    		 		%>
    		 			<table border="1">
    				 <%
@@ -176,7 +175,7 @@ rs= stmt.executeQuery();
    		 				<tr>
    		 					<td><%=rs2.getString("memo")%></td>
    		 					<td><%=rs2.getString("createDate")%></td>
-   		 					<td><a href="/diary/deleteComment.jsp?commentNo=<%=rs2.getInt("commentNo")%>">수정</a></td>
+   		 					<td><a href="/diary/deleteComment.jsp?commentNo=<%=rs2.getInt("commentNo")%>">삭제</a>
    		 				</tr>
    		 	<% 
    		 			}
